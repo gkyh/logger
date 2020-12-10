@@ -235,6 +235,12 @@ func (this *LocalLogger) writeMsg(logLevel int, msg string, v ...interface{}) er
 		src = strings.Replace(
 			fmt.Sprintf("%s:%d", stringTrim(file, strim), lineno), "%2e", ".", -1)
 	}
+	srcLen := len(src)
+	if srcLen > 30 {
+
+		pos := srcLen - 30
+		src = "..." + string([]rune(src)[pos:srcLen])
+	}
 
 	msgSt.Level = levelPrefix[logLevel]
 	msgSt.Path = src
