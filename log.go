@@ -1,9 +1,9 @@
 package logger
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
@@ -12,7 +12,7 @@ import (
 )
 
 // 默认日志输出
-var defaultLogger *LocalLogger
+//var defaultLogger *LocalLogger
 
 // 日志等级，从0-7，日优先级由高到低
 const (
@@ -126,9 +126,9 @@ type logConfig struct {
 	Conn       *connLogger    `json:"Conn,omitempty"`
 }
 
-func init() {
-	defaultLogger = NewLogger(3)
-}
+//func init() {
+//defaultLogger = NewLogger(3)
+//}
 
 func (this *LocalLogger) SetLogger(adapterName string, configs ...string) error {
 	this.lock.Lock()
@@ -322,6 +322,7 @@ func (this *LocalLogger) SetCallDepth(depth int) {
 	this.callDepth = depth
 }
 
+/*
 // GetlocalLogger returns the defaultLogger
 func GetlocalLogger() *LocalLogger {
 	return defaultLogger
@@ -460,7 +461,7 @@ func formatLog(f interface{}, v ...interface{}) string {
 	}
 	return fmt.Sprintf(msg, v...)
 }
-
+*/
 func stringTrim(s string, cut string) string {
 	ss := strings.SplitN(s, cut, 2)
 	if 1 == len(ss) {
