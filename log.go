@@ -57,7 +57,6 @@ const (
 	logTimeDefaultFormat = "2006-01-02 15:04:05" // 日志输出默认格式
 	AdapterConsole       = "console"             // 控制台输出配置项
 	AdapterFile          = "file"                // 文件输出配置项
-	AdapterConn          = "conn"                // 网络输出配置项
 )
 
 // log provider interface
@@ -123,13 +122,63 @@ type logConfig struct {
 	TimeFormat string         `json:"TimeFormat"`
 	Console    *consoleLogger `json:"Console,omitempty"`
 	File       *fileLogger    `json:"File,omitempty"`
-	Conn       *connLogger    `json:"Conn,omitempty"`
 }
 
 //func init() {
 //defaultLogger = NewLogger(3)
 //}
+func (this *LocalLogger) SetConfig(configs ...string) error {
+	this.lock.Lock()
+	defer this.lock.Unlock()
 
+	if !this.init {
+		this.outputs = []*nameLogger{}
+		this.init = true
+	}
+
+	config := append(configs, "{}")[0]
+	var num int = -1
+	var i int
+	var l *nameLogger
+	for i, l = range this.outputs {
+		if l.name == AdapterFile {
+			if l.config == config {
+				//配置没有变动，不重新设置
+				return fmt.Errorf("you have set same config for this adaptername %s", AdapterFile)
+			}
+			l.Logger.Destroy()
+			num = i
+			break
+		}
+	}
+	//logger, ok := adapters[adapterName]
+	//if !ok {
+	//	return fmt.Errorf("unknown adaptername %s (forgotten Register?)", adapterName)
+	//}
+
+	logger := &fileLogger{
+		Daily:      true,
+		MaxDays:    7,
+		Append:     true,
+		LogLevel:   LevelDebug,
+		PermitMask: "0777",
+		MaxLines:   10000,
+		MaxSize:    10 * 1024 * 1024,
+	}
+
+	err := logger.Init(config)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "logger Init <%s> err:%v, %s output ignore!\n",
+			AdapterFile, err, AdapterFile)
+		return err
+	}
+	if num >= 0 {
+		this.outputs[i] = &nameLogger{name: AdapterFile, Logger: logger, config: config}
+		return nil
+	}
+	this.outputs = append(this.outputs, &nameLogger{name: AdapterFile, Logger: logger, config: config})
+	return nil
+}
 func (this *LocalLogger) SetLogger(adapterName string, configs ...string) error {
 	this.lock.Lock()
 	defer this.lock.Unlock()
@@ -198,14 +247,6 @@ func (this *LocalLogger) SetLogPathTrim(trimPath string) {
 
 func (this *LocalLogger) writeToLoggers(when time.Time, msg *loginfo, level int) {
 	for _, l := range this.outputs {
-		if l.name == AdapterConn {
-			//网络日志，使用json格式发送,此处使用结构体，用于类似ElasticSearch功能检索
-			err := l.LogWrite(when, msg, level)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "unable to WriteMsg to adapter:%v,error:%v\n", l.name, err)
-			}
-			continue
-		}
 
 		msgStr := when.Format(this.timeFormat) + " [" + msg.Level + "] " + "[" + msg.Path + "] " + msg.Content
 		err := l.LogWrite(when, msgStr, level)

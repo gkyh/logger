@@ -38,3 +38,29 @@ func (g *Log) Printf(format string, args ...interface{}) {
 func (g *Log) Println(args ...interface{}) {
     log.Debug(formatLog(args...), args...)
 }
+  
+# 3. 修改不支持多日志文件输出
+
+    log = logger.NewLogger(3)
+    log.SetConfig(`{
+        "filename": "logs/app.log", 
+        "level": "TRAC",
+        "maxlines": 1000000,
+         "maxsize": 1,       
+        "daily": true,         
+        "maxdays": 1,         
+        "append": true,        
+        "permit": "0660"       
+    }`)
+
+    log2 = logger.NewLogger(3)
+    log2.SetConfig(`{
+        "filename": "logs/log2.log", 
+        "level": "TRAC",
+        "maxlines": 1000000,
+         "maxsize": 1,       
+        "daily": true,         
+        "maxdays": 1,         
+        "append": true,        
+        "permit": "0660"       
+    }`)
