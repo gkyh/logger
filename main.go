@@ -46,6 +46,22 @@ func formatLog(v ...interface{}) string {
 
 	return msg
 }
+func Printf(format string, args ...interface{}) {
+
+	log.Info(format, args...)
+}
+func Infof(format string, args ...interface{}) {
+
+	log.Info(format, args...)
+}
+func Errorf(format string, args ...interface{}) {
+
+	log.Error(format, args...)
+}
+func Warnf(format string, args ...interface{}) {
+
+	log.Warn(format, args...)
+}
 
 func Info(args ...interface{}) {
 
@@ -57,6 +73,11 @@ func Warn(args ...interface{}) {
 	log.Warn(formatLog(args...), args...)
 }
 
+func Panic(args ...interface{}) {
+
+	log.Panic(formatLog(args...), args...)
+
+}
 func Error(args ...interface{}) {
 
 	log.Error(formatLog(args...), args...)
