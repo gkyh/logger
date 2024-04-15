@@ -106,3 +106,13 @@ func Println(args ...interface{}) {
 
 	log.Info(formatLog(args...), args...)
 }
+
+func Panic(args ...interface{}) {
+
+	log.Panic(formatLog(args...), args...)
+}
+
+func Fatal(args ...interface{}) {
+
+	log.Fatal(formatLog(args...), args...)
+}
