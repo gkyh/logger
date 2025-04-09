@@ -106,3 +106,9 @@ func Println(args ...interface{}) {
 
 	log.Info(formatLog(args...), args...)
 }
+func Json(s interface{}) {
+
+	jsonData, _ := json.Marshal(s)
+	log.Info(string(jsonData))
+
+}
