@@ -2,6 +2,7 @@ package logger
 
 import (
 	"strings"
+	"encoding/json"
 )
 
 var log *LocalLogger
