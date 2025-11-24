@@ -295,17 +295,17 @@ func (this *LocalLogger) writeMsg(skip, logLevel int, msg string, v ...interface
 
 func (l *LocalLogger) InfoSkip(skip int, format string, args ...interface{}) {
    
-    l.writeMsg(skip, LevelInformational, args...)
+    l.writeMsg(skip, LevelInformational,format, args...)
 }
 
 func (l *LocalLogger) ErrorSkip(skip int, format string, args ...interface{}) {
    
-    l.writeMsg(skip, LevelError, args...)
+    l.writeMsg(skip, LevelError,format, args...)
 }
 
 func (l *LocalLogger) DebugSkip(skip int, format string, args ...interface{}) {
    
-    l.writeMsg(skip, LevelDebug, args...)
+    l.writeMsg(skip, LevelDebug,format, args...)
 }
 
 func (this *LocalLogger) Fatal(format string, args ...interface{}) {
@@ -525,4 +525,5 @@ func stringTrim(s string, cut string) string {
 	}
 	return ss[1]
 }
+
 
