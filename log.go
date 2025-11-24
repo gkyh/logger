@@ -256,7 +256,7 @@ func (this *LocalLogger) writeToLoggers(when time.Time, msg *loginfo, level int)
 	}
 }
 
-func (this *LocalLogger) writeMsg(logLevel int, msg string, v ...interface{}) error {
+func (this *LocalLogger) writeMsg(skip, logLevel int, msg string, v ...interface{}) error {
 	if !this.init {
 		this.SetLogger(AdapterConsole)
 	}
@@ -266,7 +266,7 @@ func (this *LocalLogger) writeMsg(logLevel int, msg string, v ...interface{}) er
 		msg = fmt.Sprintf(msg, v...)
 	}
 	when := time.Now()
-	_, file, lineno, ok := runtime.Caller(this.callDepth)
+	_, file, lineno, ok := runtime.Caller(this.callDepth+skip)
 	var strim string = "src/"
 	if this.usePath != "" {
 		strim = this.usePath
@@ -293,6 +293,21 @@ func (this *LocalLogger) writeMsg(logLevel int, msg string, v ...interface{}) er
 	return nil
 }
 
+func (l *LocalLogger) InfoSkip(skip int, format string, args ...interface{}) {
+   
+    l.writeMsg(skip, LevelInformational, args...)
+}
+
+func (l *LocalLogger) ErrorSkip(skip int, format string, args ...interface{}) {
+   
+    l.writeMsg(skip, LevelError, args...)
+}
+
+func (l *LocalLogger) DebugSkip(skip int, format string, args ...interface{}) {
+   
+    l.writeMsg(skip, LevelDebug, args...)
+}
+
 func (this *LocalLogger) Fatal(format string, args ...interface{}) {
 	this.Emer("###Exec Panic:"+format, args...)
 	os.Exit(1)
@@ -305,42 +320,42 @@ func (this *LocalLogger) Panic(format string, args ...interface{}) {
 
 // Emer Log EMERGENCY level message.
 func (this *LocalLogger) Emer(format string, v ...interface{}) {
-	this.writeMsg(LevelEmergency, format, v...)
+	this.writeMsg(0,LevelEmergency, format, v...)
 }
 
 // Alert Log ALERT level message.
 func (this *LocalLogger) Alert(format string, v ...interface{}) {
-	this.writeMsg(LevelAlert, format, v...)
+	this.writeMsg(0,LevelAlert, format, v...)
 }
 
 // Crit Log CRITICAL level message.
 func (this *LocalLogger) Crit(format string, v ...interface{}) {
-	this.writeMsg(LevelCritical, format, v...)
+	this.writeMsg(0,LevelCritical, format, v...)
 }
 
 // Error Log ERROR level message.
 func (this *LocalLogger) Error(format string, v ...interface{}) {
-	this.writeMsg(LevelError, format, v...)
+	this.writeMsg(0,LevelError, format, v...)
 }
 
 // Warn Log WARNING level message.
 func (this *LocalLogger) Warn(format string, v ...interface{}) {
-	this.writeMsg(LevelWarning, format, v...)
+	this.writeMsg(0,LevelWarning, format, v...)
 }
 
 // Info Log INFO level message.
 func (this *LocalLogger) Info(format string, v ...interface{}) {
-	this.writeMsg(LevelInformational, format, v...)
+	this.writeMsg(0,LevelInformational, format, v...)
 }
 
 // Debug Log DEBUG level message.
 func (this *LocalLogger) Debug(format string, v ...interface{}) {
-	this.writeMsg(LevelDebug, format, v...)
+	this.writeMsg(0,LevelDebug, format, v...)
 }
 
 // Trace Log TRAC level message.
 func (this *LocalLogger) Trace(format string, v ...interface{}) {
-	this.writeMsg(LevelTrace, format, v...)
+	this.writeMsg(0,LevelTrace, format, v...)
 }
 
 func (this *LocalLogger) Close() {
@@ -510,3 +525,4 @@ func stringTrim(s string, cut string) string {
 	}
 	return ss[1]
 }
+
