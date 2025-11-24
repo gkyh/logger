@@ -113,3 +113,15 @@ func Json(s interface{}) {
 	log.Info(string(jsonData))
 
 }
+func InfoSkip(depth int, args ...interface{}){
+
+	log.InfoSkip(depth, formatLog(args...), args...)
+}
+func ErrorSkip(depth int, args ...interface{}){
+
+	log.ErrorSkip(depth, formatLog(args...), args...)
+}
+func DebugSkip(depth int, args ...interface{}){
+
+	log.DebugSkip(depth, formatLog(args...), args...)
+}
