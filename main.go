@@ -47,9 +47,9 @@ func formatLog(v ...interface{}) string {
 
 	return msg
 }
-func Printf(depth int,format string, args ...interface{}) {
+func Printf(format string, args ...interface{}) {
 
-	log.InfoSkip(depth, formatLog(args...), args...)
+	log.InfoSkip(1, formatLog(args...), args...)
 }
 func Infof(format string, args ...interface{}) {
 
